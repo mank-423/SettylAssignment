@@ -3,14 +3,23 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 const User = require('./models/usermodel')
+const item = require('./models/Item')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const jwtSecret = 'secret123'
-
-
-mongoose.connect('mongodb+srv://admin-mank:mankMongo@cluster0.5sulplv.mongodb.net/mern-login', { useNewUrlParser: true })
-
 const PORT = 5000
+
+
+async function connect() {
+    try {
+        await mongoose.connect('mongodb+srv://mankmern:mankmern@mernproject.bicx37m.mongodb.net/settyl?retryWrites=true&w=majority', { useNewUrlParser: true })
+        console.log("Connect to mongoDB");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+connect();
 
 app.use(cors())
 app.use(express.json())
@@ -19,8 +28,10 @@ app.use(express.json())
 app.post('/api/register', async (req, res) => {
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10);
+
         const user = await User.create({
             name: req.body.name,
+            username: req.body.userName,
             email: req.body.email,
             password: newPassword,
         })
@@ -40,14 +51,14 @@ app.post('/api/login', async (req, res) => {
         // password: req.body.password,
     })
     if (!user) {
-        return res.json({ 
-            status: 'error', 
-            error: 'Invalid Email' 
+        return res.json({
+            status: 'error',
+            error: 'Invalid Email'
         })
     }
 
     const isPasswordValid = await bcrypt.compare(
-        req.body.password, 
+        req.body.password,
         user.password
     );
 
@@ -63,6 +74,55 @@ app.post('/api/login', async (req, res) => {
     }
 })
 
+app.post('/api/items', async (req, res) => {
+    try {
+        // Get the token from the request headers
+        const token = req.headers['x-access-token'];
+
+        // Verify the token to get the user information
+        const decoded = jwt.verify(token, jwtSecret); // Replace with your actual secret key
+
+        const newItem = new item({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            user: req.body.user, // Associate the item with the user
+        });
+
+        await newItem.save();
+
+        res.json({ status: 'ok', item: newItem });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+});
+
+// Update the route in your backend
+app.get('/api/items/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const items = await item.find({ user: userId });
+        res.json({ status: 'ok', items });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+});
+
+app.get('/api/items', async (req, res) => {
+    try {
+        const items = await item.find();
+        res.json({ status: 'ok', items })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+})
+
+
+
 app.get('/api/quote', async (req, res) => {
     const token = req.headers['x-access-token']
     try {
@@ -77,6 +137,7 @@ app.get('/api/quote', async (req, res) => {
         res.json({ status: 'error', error: 'invalid token' })
     }
 })
+
 
 app.post('/api/quote', async (req, res) => {
     const token = req.headers['x-access-token']
@@ -96,6 +157,9 @@ app.post('/api/quote', async (req, res) => {
         res.json({ status: 'error', error: 'invalid token' })
     }
 })
+
+
+
 
 app.get('/hello', (req, res) => {
     res.send("Hello World")
