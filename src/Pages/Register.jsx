@@ -32,8 +32,8 @@ function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-white shadow-md p-8 rounded-md w-96">
+    <div className="flex items-center justify-center h-screen bg-gray-300">
+      <div className="bg-black shadow-md p-8 rounded-md w-96 text-white">
         <h1 className="text-2xl font-bold mb-4 flex justify-center">Register</h1>
         <button
           className="mb-4 text-blue-500 hover:underline"

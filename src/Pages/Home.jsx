@@ -136,7 +136,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex bg-gray-100">
       <div className="flex-1">
         {/* Display ItemCards */}
         {itemsList.map((item) => (

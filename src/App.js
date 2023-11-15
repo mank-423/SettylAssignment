@@ -4,6 +4,7 @@ import Login from './Pages/Login'
 import Register from './Pages/Register'
 import Home from './Pages/Home'
 import AddItem from './Pages/AddItem'
+import Navbar from './Component/Navbar'
 
 export default function App() {
   
@@ -11,6 +12,7 @@ export default function App() {
     <div>
 
       <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/login' element={<Login />}/>

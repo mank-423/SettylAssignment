@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const User = require('./models/usermodel')
 const item = require('./models/Item')
+const Transaction = require('./models/Transaction')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
@@ -115,13 +116,35 @@ app.get('/api/items/:id', async (req, res) => {
     }
 });
 
-// Update the route in your backend to handle closing bidding
 app.put('/api/items/:id/close-bidding', async (req, res) => {
     const itemId = req.params.id;
 
     try {
+        // Find the item with the specified id
+        const currentItem = await item.findById(itemId);
+
+        if (!currentItem) {
+            return res.status(404).json({ status: 'error', error: 'Item not found' });
+        }
+
+        // Check if bidding is already closed
+        if (currentItem.biddingStatus === 'closed') {
+            return res.status(400).json({ status: 'error', error: 'Bidding is already closed for this item' });
+        }
+
         // Update the item with the specified id to set biddingStatus to 'closed'
         const updatedItem = await item.findByIdAndUpdate(itemId, { biddingStatus: 'closed' }, { new: true });
+
+        // Create a transaction
+        const transaction = new Transaction({
+            username: currentItem.user, // Assuming user is stored as the username in the Item model
+            itemName: currentItem.name,
+            closingPrice: currentItem.highestBidAmount,
+            buyer: currentItem.highestBidder,
+        });
+
+        // Save the transaction to the database
+        await transaction.save();
 
         if (updatedItem) {
             return res.json({ status: 'ok', message: 'Bidding closed successfully', updatedItem });
@@ -133,6 +156,7 @@ app.put('/api/items/:id/close-bidding', async (req, res) => {
         res.status(500).json({ status: 'error', error: 'Internal Server Error' });
     }
 });
+
 
 // Update the route in your backend for placing bids
 app.post('/api/items/:itemId/bid', async (req, res) => {
@@ -167,6 +191,25 @@ app.post('/api/items/:itemId/bid', async (req, res) => {
       res.status(500).json({ status: 'error', error: 'Internal Server Error' });
     }
   });
+
+  // Route to fetch transactions by username
+app.get('/api/transactions/:username', async (req, res) => {
+    const username = req.params.username;
+
+    try {
+        // Find transactions based on the provided username
+        const transactions = await Transaction.find({ username });
+
+        if (transactions.length > 0) {
+            return res.json({ status: 'ok', transactions });
+        } else {
+            return res.status(404).json({ status: 'error', error: 'No transactions found for the specified username' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+});
   
 
 app.get('/api/items', async (req, res) => {

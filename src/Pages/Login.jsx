@@ -39,8 +39,8 @@ function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-white shadow-md p-8 rounded-md w-96">
+    <div className="flex items-center justify-center h-screen bg-gray-300">
+      <div className="bg-black text-white shadow-md p-8 rounded-md w-96">
         <h1 className="text-2xl font-bold mb-4 flex justify-center">Login</h1>
         <div className="mb-4">
           <Link to="/register" className="text-blue-500 hover:underline">
