@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import ItemCard from "../Component/ItemCard";
+import Chatbox from "../Component/Chatbox";
 
 const Home = () => {
   const [itemsList, setItemsList] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [chatboxVisible, setChatboxVisible] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [currentMessage, setCurrentMessage] = useState('');
+  const [currentMessages, setCurrentMessages] = useState({});
   const [bidAmounts, setBidAmounts] = useState({});
   const senderUserId = localStorage.getItem('id');
 
@@ -60,16 +61,23 @@ const Home = () => {
   }, [senderUserId]);
 
   const openChatbox = (item) => {
-    setSelectedItem(item);
-    setChatboxVisible(true);
+    setSelectedItems((prev) => [...prev, item]);
+    setCurrentMessages((prev) => ({ ...prev, [item._id]: '' }));
+    // setChatboxVisible((prev) => ({ ...prev, [item._id]: true }));
   };
 
-  const closeChatbox = () => {
-    setSelectedItem(null);
-    setChatboxVisible(false);
+  const closeChatbox = (item) => {
+    setSelectedItems((prev) => prev.filter((selectedItem) => selectedItem._id !== item._id));
+    setCurrentMessages((prev) => {
+      const updatedMessages = { ...prev };
+      delete updatedMessages[item._id]; // Remove currentMessage for the closed chatbox
+      return updatedMessages;
+    });
+    // setChatboxVisible((prev) => ({ ...prev, [item._id]: false }));
   };
 
-  const sendMessage = () => {
+  const sendMessage = (itemId) => {
+    const currentMessage = currentMessages[itemId];
     if (currentMessage.trim() === '') {
       return; // Ignore empty messages
     }
@@ -81,7 +89,7 @@ const Home = () => {
     };
 
     setMessages([...messages, newMessage]);
-    setCurrentMessage('');
+    setCurrentMessages((prev) => ({ ...prev, [itemId]: '' })); // Clear currentMessage after sending the message
   };
 
   const handleBid = async (itemId) => {
@@ -128,66 +136,40 @@ const Home = () => {
   };
 
   return (
-    <div>
-      {itemsList.map((item) => (
-        <div key={item._id}>
-          {item.biddingStatus === 'open' ? (
-            <p style={{ color: 'green', fontWeight: '700' }}>Bidding is Open</p>
-          ) : (
-            <p style={{ color: 'red', fontWeight: '800' }}>Bidding is Closed</p>
-          )}
-          {/* Display item details here */}
-          <p>{item.name}</p>
-          <p>{item.description}</p>
-          <p>{item.price}</p>
-          <p>Highest bid:{item.highestBidAmount}</p>
-          <p>Highest bidder: {item.highestBidder}</p>
-
-          {/* Add a button to open the chatbox */}
-          <button onClick={() => openChatbox(item)}>Open Chat</button>
-
-          {/* Add input for placing bids */}
-          {senderUserId && item.biddingStatus === 'open' && (
-            <div>
-              <input
-                type="number"
-                value={bidAmounts[item._id]}
-                onChange={(e) => setBidAmounts({ ...bidAmounts, [item._id]: e.target.value })}
-                placeholder="Enter bid amount"
+    <div className="flex">
+      <div className="flex-1">
+        {/* Display ItemCards */}
+        {itemsList.map((item) => (
+          <div key={item._id} className="flex item-container">
+            {/* ItemCard */}
+            <div className="flex-1">
+              <ItemCard
+                item={item}
+                openChatbox={openChatbox}
+                handleBid={handleBid}
+                bidAmount={bidAmounts}
+                setBidAmount={setBidAmounts}
               />
-              <button onClick={() => handleBid(item._id)}>Place Bid</button>
             </div>
-          )}
-        </div>
-      ))}
-
-      {/* Chatbox */}
-      {chatboxVisible && selectedItem && (
-        <div className="chatbox">
-          <h2>{selectedItem.name} Chat</h2>
-
-          {/* Display chat messages */}
-          <div className="messages-container">
-            {messages.map((message, index) => (
-              <div key={index} className={message.sender === senderUserId ? 'sent' : 'received'}>
-                <p>{message.text}</p>
-                <small>{message.timestamp}</small>
-              </div>
-            ))}
           </div>
+        ))}
+      </div>
 
-          {/* Input for typing messages */}
-          <textarea
-            value={currentMessage}
-            onChange={(e) => setCurrentMessage(e.target.value)}
-            placeholder="Type your message..."
+      <div className="flex-1">
+        {/* Display Chatboxes */}
+        {selectedItems.map((selectedItem) => (
+          <Chatbox
+            key={selectedItem._id}
+            selectedItem={selectedItem}
+            messages={messages}
+            senderUserId={senderUserId}
+            currentMessage={currentMessages[selectedItem._id] || ''}
+            onMessageChange={(newMessage) => setCurrentMessages((prev) => ({ ...prev, [selectedItem._id]: newMessage }))}
+            onSendMessage={() => sendMessage(selectedItem._id)}
+            onCloseChatbox={() => closeChatbox(selectedItem)}
           />
-          <button onClick={sendMessage}>Send</button>
-
-          {/* Add a button to close the chatbox */}
-          <button onClick={closeChatbox}>Close Chat</button>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 };

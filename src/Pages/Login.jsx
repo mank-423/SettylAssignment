@@ -1,90 +1,92 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [loginSuccess, setLoginSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  // Fetch API usage
-  async function LoginUser(event) {
+  async function loginUser(event) {
     event.preventDefault();
 
-    const response =
-      await fetch("http://localhost:5000/api/login", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          // name, 
-          email,
-          password
-        })
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password
       })
+    });
 
     const data = await response.json();
-    console.log(data);
 
     if (data.user) {
       alert("Login Successful");
-      // saving the token for the user to localstorage
       localStorage.setItem('token', data.user);
       localStorage.setItem('id', userName);
-
-      console.log(data.user);
-      // window.location.href="/"; //to go to home again
       window.location.href = "/addItem";
-
     } else {
       alert("Please check your username and password");
+
+      // Check if the user is not registered, then navigate to the register page
+      if (data.error === 'User not registered') {
+        navigate('/register');
+      }
     }
-
-
   }
 
-  // If loginSuccess is true, redirect to the '/' route
-  // if (loginSuccess) {
-  //   return <Navigate to="/" />;
-  // }
-
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={LoginUser}>
-        {/* Name of the user */}
-        <input
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          type="text"
-          placeholder="Username"
-        />
-
-        {/* Email */}
-        <br />
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          type="text"
-          placeholder="Email"
-        />
-
-        {/* Password */}
-        <br />
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type="password"
-          placeholder='Password'
-        />
-        {/* Btn */}
-        <br />
-        <input type="submit" value="Login" />
-      </form>
-
-
+    <div className="flex items-center justify-center h-screen">
+      <div className="bg-white shadow-md p-8 rounded-md w-96">
+        <h1 className="text-2xl font-bold mb-4 flex justify-center">Login</h1>
+        <div className="mb-4">
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Don't have an account? Register here.
+          </Link>
+        </div>
+        <form onSubmit={loginUser}>
+          <div className="mb-4">
+            <input
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              type="text"
+              placeholder="Username"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="Email"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              className="w-full p-2 border border-gray-300 rounded-md"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder='Password'
+            />
+          </div>
+          <div className="mb-4">
+            <button
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

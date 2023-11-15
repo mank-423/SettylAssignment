@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './Pages/Login'
 import Register from './Pages/Register'
 import Home from './Pages/Home'
-import Quote from './Pages/Quote'
 import AddItem from './Pages/AddItem'
 
 export default function App() {
@@ -16,7 +15,6 @@ export default function App() {
           <Route path='/' element={<Home />}/>
           <Route path='/login' element={<Login />}/>
           <Route path='/register' element={<Register />}/>
-          <Route path='/quote' element={<Quote />}/>
           <Route path='/addItem' element={<AddItem />}/>
         </Routes>
       </BrowserRouter>
