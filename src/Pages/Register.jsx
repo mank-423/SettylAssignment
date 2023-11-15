@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [name, setName] = useState("");
+    const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ function Register() {
                 },
                 body: JSON.stringify({
                     name,
+                    userName,
                     email,
                     password
                 })
@@ -42,6 +44,16 @@ function Register() {
                     onChange={(e) => setName(e.target.value)}
                     type="text"
                     placeholder="Name"
+                />
+
+                {/* Username */}
+                {/* Name of the user */}
+                <br />
+                <input
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    type="text"
+                    placeholder="Username"
                 />
 
                 {/* Email */}

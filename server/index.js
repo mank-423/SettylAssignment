@@ -6,6 +6,8 @@ const User = require('./models/usermodel')
 const item = require('./models/Item')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const http = require('http');
+const webSocketServer = require('websocket').server;
 const jwtSecret = 'secret123'
 const PORT = 5000
 
