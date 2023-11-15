@@ -6,6 +6,8 @@ const User = require('./models/usermodel')
 const item = require('./models/Item')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+
+
 const http = require('http');
 const webSocketServer = require('websocket').server;
 const jwtSecret = 'secret123'
@@ -113,6 +115,60 @@ app.get('/api/items/:id', async (req, res) => {
     }
 });
 
+// Update the route in your backend to handle closing bidding
+app.put('/api/items/:id/close-bidding', async (req, res) => {
+    const itemId = req.params.id;
+
+    try {
+        // Update the item with the specified id to set biddingStatus to 'closed'
+        const updatedItem = await item.findByIdAndUpdate(itemId, { biddingStatus: 'closed' }, { new: true });
+
+        if (updatedItem) {
+            return res.json({ status: 'ok', message: 'Bidding closed successfully', updatedItem });
+        } else {
+            return res.status(404).json({ status: 'error', error: 'Item not found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+});
+
+// Update the route in your backend for placing bids
+app.post('/api/items/:itemId/bid', async (req, res) => {
+    const { itemId } = req.params;
+    const { userId, bidAmount } = req.body;
+  
+    try {
+      const Item = await item.findById(itemId);
+  
+      if (!Item) {
+        return res.status(404).json({ status: 'error', error: 'Item not found' });
+      }
+  
+      if (parseFloat(bidAmount) <= 0) {
+        return res.status(400).json({ status: 'error', error: 'Bid amount must be greater than 0' });
+      }
+  
+      if (parseFloat(bidAmount) <= Item.highestBidAmount) {
+        return res.status(400).json({ status: 'error', error: 'Bid amount must be higher than the current highest bid' });
+      }
+  
+      // Update item with the new bid
+      Item.highestBidAmount = parseFloat(bidAmount);
+      Item.highestBidder = userId;
+  
+      // Save the updated item
+      await Item.save();
+  
+      return res.json({ status: 'ok', Item });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: 'error', error: 'Internal Server Error' });
+    }
+  });
+  
+
 app.get('/api/items', async (req, res) => {
     try {
         const items = await item.find();
@@ -124,41 +180,49 @@ app.get('/api/items', async (req, res) => {
 })
 
 
+const server = http.createServer(app);
+const webSocketsServerPort = 8000;
+const wsServer = new webSocketServer({
+    httpServer: server
+});
 
-app.get('/api/quote', async (req, res) => {
-    const token = req.headers['x-access-token']
-    try {
-        const decoded = jwt.verify(token, jwtSecret);
-        const emailUser = decoded.email;
+const clients = {};
 
-        const user = await User.findOne({ email: emailUser })
-
-        return res.json({ status: 'ok', quote: user.quote })
-    } catch (error) {
-        console.log(error);
-        res.json({ status: 'error', error: 'invalid token' })
-    }
-})
+// This code generates unique userid for every user.
+const getUniqueID = () => {
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    return s4() + s4() + '-' + s4();
+};
 
 
-app.post('/api/quote', async (req, res) => {
-    const token = req.headers['x-access-token']
-    try {
-        const decoded = jwt.verify(token, jwtSecret);
-        const emailUser = decoded.email;
+wsServer.on('request', function (request) {
+    var userID = getUniqueID();
+    console.log((new Date()) + ' Received a new connection from origin ' + request.origin + '.');
 
-        await User.updateOne(
-            { email: emailUser },
-            {
-                $set: { quote: req.body.quote }
-            })
+    // You can rewrite this part of the code to accept only the requests from allowed origin
+    const connection = request.accept(null, request.origin);
+    clients[userID] = connection;
+    console.log('Connected: ' + userID + ' in ' + Object.getOwnPropertyNames(clients));
 
-        return res.json({ status: 'ok' });
-    } catch (error) {
-        console.log(error);
-        res.json({ status: 'error', error: 'invalid token' })
-    }
-})
+    connection.on('message', function (message) {
+        if (message.type === 'utf8') {
+            console.log('Received Message: ', message.utf8Data);
+
+            // Broadcasting message to all connected clients excluding the sender
+            Object.keys(clients).forEach(key => {
+                if (key !== userID) {
+                    clients[key].sendUTF(message.utf8Data);
+                    console.log('Sent Message to: ', clients[key]);
+                }
+            });
+        }
+    });
+
+    connection.on('close', function (reasonCode, description) {
+        console.log('Connection closed:', userID, 'Reason:', reasonCode, description);
+        delete clients[userID];
+    });
+});
 
 
 

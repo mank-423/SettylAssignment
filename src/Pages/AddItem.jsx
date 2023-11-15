@@ -8,69 +8,90 @@ const AddItem = () => {
 
     const handleAddItem = async (e) => {
         e.preventDefault();
-
+    
         const token = localStorage.getItem('token');
         const userName = localStorage.getItem('id');
-
+    
         try {
-
-            // Perform the API call to add the item
-            const response = await fetch('http://localhost:5000/api/items', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': token,
-                },
-                body: JSON.stringify({
-                    name: itemName,
-                    description: itemDescription,
-                    price: itemPrice,
-                    user: userName,
-                }),
-            });
-
-            if (response.ok) {
-                // Item added successfully
-                console.log('Item added successfully!');
-                alert("Item added successfully!")
-                // You can also redirect or perform any other action here
-            } else {
-                // Handle error
-                console.error('Error adding item:', response.statusText);
-            }
+          const response = await fetch('http://localhost:5000/api/items', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': token,
+            },
+            body: JSON.stringify({
+              name: itemName,
+              description: itemDescription,
+              price: itemPrice,
+              user: userName,
+            }),
+          });
+    
+          if (response.ok) {
+            console.log('Item added successfully!');
+            alert("Item added successfully!");
+          } else {
+            console.error('Error adding item:', response.statusText);
+          }
         } catch (error) {
-            console.error('API call error:', error.message);
+          console.error('API call error:', error.message);
         }
-    };
+      };
 
-    useEffect(() => {
-        const fetchUserItems = async () => {
-            const token = localStorage.getItem("token");
-            const userId = localStorage.getItem("id");
-
-            try {
-                // Perform the API call to get user items
-                const response = await fetch(`http://localhost:5000/api/items/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-access-token": token,
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserItems(data.items);
-                } else {
-                    console.error("Error fetching user items:", response.statusText);
-                }
-            } catch (error) {
-                console.error("API call error:", error.message);
+      const fetchUserItems = async () => {
+          const token = localStorage.getItem("token");
+          const userId = localStorage.getItem("id");
+    
+          try {
+            const response = await fetch(`http://localhost:5000/api/items/${userId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "x-access-token": token,
+              },
+            });
+    
+            if (response.ok) {
+              const data = await response.json();
+              setUserItems(data.items);
+            } else {
+              console.error("Error fetching user items:", response.statusText);
             }
+          } catch (error) {
+            console.error("API call error:", error.message);
+          }
         };
-
+    
+      useEffect(() => {
+    
         fetchUserItems();
-    }, [userItems]); // Run this effect only once when the component mounts
+      }, [userItems]);
+
+      const handleCloseBidding = async (itemId) => {
+        const token = localStorage.getItem('token');
+    
+        try {
+          const response = await fetch(`http://localhost:5000/api/items/${itemId}/close-bidding`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': token,
+            },
+          });
+    
+          if (response.ok) {
+            // Bidding closed successfully
+            console.log('Bidding closed successfully!');
+            // You may want to refresh the user items after closing bidding
+            fetchUserItems();
+          } else {
+            // Handle error
+            console.error('Error closing bidding:', response.statusText);
+          }
+        } catch (error) {
+          console.error('API call error:', error.message);
+        }
+      };
 
 
     return (
@@ -116,6 +137,18 @@ const AddItem = () => {
                     <li key={item._id}>
                         <strong>Name:</strong> {item.name}, <strong>Description:</strong>{" "}
                         {item.description}, <strong>Price:</strong> {item.price}
+
+                        {/* Display bidding details */}
+                        <p>Highest Bid: {item.highestBidAmount}</p>
+                        <p>Highest Bidder: {item.highestBidder || 'None'}</p>
+                        <p>Bidding Status: {item.biddingStatus}</p>
+
+                        {/* Add a button to close bidding (if it's open) */}
+                        {item.biddingStatus === 'open' && (
+                            <button type="button" onClick={() => handleCloseBidding(item._id)}>
+                                Close Bidding
+                            </button>
+                        )}
                     </li>
                 ))}
             </ul>

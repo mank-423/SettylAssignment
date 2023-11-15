@@ -34,7 +34,7 @@ function Login() {
 
       console.log(data.user);
       // window.location.href="/"; //to go to home again
-      window.location.href = "/quote";
+      window.location.href = "/addItem";
 
     } else {
       alert("Please check your username and password");
