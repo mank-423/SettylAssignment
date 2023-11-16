@@ -185,7 +185,7 @@ const AddItem = () => {
             <div key={item._id} className="border p-4 rounded-md shadow-md text-white bg-black">
               <h3 className="text-xl font-bold mb-2">{item.name}</h3>
               <p className=" mb-2">{item.description}</p>
-              <p className=" mb-2">${item.price}</p>
+              <p className=" mb-2">₹{item.price}</p>
 
               {/* Display bidding details */}
               <p className="mb-2">
