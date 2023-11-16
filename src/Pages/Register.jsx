@@ -11,7 +11,7 @@ function Register() {
   async function registerUser(event) {
     event.preventDefault();
 
-    const response = await fetch("http://localhost:5000/api/register", {
+    const response = await fetch("https://settylapi.onrender.com/api/register", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,8 +33,8 @@ function Register() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-300">
-      <div className="bg-black shadow-md p-8 rounded-md w-96 text-white">
-        <h1 className="text-2xl font-bold mb-4 flex justify-center">Register</h1>
+      <div className="bg-black shadow-md p-8 rounded-md w-96 ">
+        <h1 className="text-2xl font-bold mb-4 flex justify-center text-white">Register</h1>
         <button
           className="mb-4 text-blue-500 hover:underline"
           onClick={() => navigate('/login')}

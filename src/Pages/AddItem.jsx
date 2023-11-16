@@ -13,7 +13,7 @@ const AddItem = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/items", {
+      const response = await fetch("https://settylapi.onrender.com/api/items", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +46,7 @@ const AddItem = () => {
     const userId = localStorage.getItem("id");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/items/${userId}`, {
+      const response = await fetch(`https://settylapi.onrender.com/api/items/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const AddItem = () => {
     const userId = localStorage.getItem("id");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/transactions/${userId}`, {
+      const response = await fetch(`https://settylapi.onrender.com/api/transactions/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const AddItem = () => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`http://localhost:5000/api/items/${itemId}/close-bidding`, {
+      const response = await fetch(`https://settylapi.onrender.com/api/items/${itemId}/close-bidding`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

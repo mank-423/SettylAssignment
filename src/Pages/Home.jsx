@@ -14,7 +14,7 @@ const Home = () => {
     const fetchAllItems = async () => {
       try {
         // Get all the products
-        const response = await fetch('http://localhost:5000/api/items', {
+        const response = await fetch('https://settylapi.onrender.com/api/items', {
           method: 'GET',
           headers: {
             "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Home = () => {
 
   const handleBid = async (itemId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/items/${itemId}/bid`, {
+      const response = await fetch(`https://settylapi.onrender.com/api/items/${itemId}/bid`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
