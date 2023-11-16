@@ -14,7 +14,7 @@ const ItemCard = ({ item, openChatbox, handleBid, bidAmount, setBidAmount }) => 
       {/* Display item details here */}
       <p className="text-xl font-bold mb-2">{item.name}</p>
       <p className="text-gray-300 mb-4">{item.description}</p>
-      <p className="text-lg font-bold mb-2">₹~{item.price}</p>
+      <p className="text-lg font-bold mb-2">₹{item.price}</p>
       <p className="text-gray-300">Highest bid: ₹{item.highestBidAmount}</p>
       <p className="text-gray-300">Highest bidder: {item.highestBidder}</p>
 
