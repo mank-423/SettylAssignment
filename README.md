@@ -8,6 +8,7 @@ A MERN project built as real-time bidding application. This assignment is a full
 - [Technologies](#technologies)
 - [Getting Started](#getting-started)
   - [Installation](#installation)
+  - [Set up the Frontend](#set-up-the-frontend)
   - [Running the Server](#running-the-server)
 - [UI of project](#ui-of-project)
 - [API Endpoints](#api-endpoints)
@@ -50,7 +51,7 @@ Clone the repository:
     https://github.com/mank-423/SettylAssignment
    ```
 
-### Set up the front-end
+### Set up the Frontend
 ```bash
 cd SettylAssignment
 npm install
