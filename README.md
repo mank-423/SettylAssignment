@@ -65,7 +65,7 @@ npm install
 node index.js
 ```
 
-### UI of project
+## UI of project
 
 - Home page
 <img width="947" alt="image" src="https://github.com/mank-423/SettylAssignment/assets/96490105/5ba42894-6881-4bf7-bb8e-2da910fc78f7">
