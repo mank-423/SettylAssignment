@@ -9,7 +9,7 @@ A MERN project built as real-time bidding application. This assignment is a full
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Running the Server](#running-the-server)
-- [UI of project](#ui-for-project)
+- [UI of project](#ui-of-project)
 - [API Endpoints](#api-endpoints)
 - [API Calls](#api-call)
 
