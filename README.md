@@ -43,8 +43,8 @@ The features of the project:
 6. User authentication with JWT
 7. Storing user data, item listing, auction data, and transaction history
 
-* As the project's backend runs on free tier, first open the link for the [https://settylapi.onrender.com/][API] and once it shows the 'Cannot GET /' message then the API is up and runing.
-* Now you can use the deployed app on [https://settylassignment.onrender.com/][this link].
+* As the project's backend runs on free tier, first open the link for the [https://settylapi.onrender.com/] and once it shows the 'Cannot GET /' message then the API is up and runing.
+* Now you can use the deployed app on [https://settylassignment.onrender.com/].
 
 ### Installation
 
