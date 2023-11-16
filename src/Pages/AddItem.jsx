@@ -189,7 +189,7 @@ const AddItem = () => {
 
               {/* Display bidding details */}
               <p className="mb-2">
-                <strong>Highest Bid:</strong> ${item.highestBidAmount}
+                <strong>Highest Bid:</strong> ₹{item.highestBidAmount}
               </p>
               <p className="mb-2">
                 <strong>Highest Bidder:</strong> {item.highestBidder || "None"}
@@ -228,7 +228,7 @@ const AddItem = () => {
                 <strong>Item Name:</strong> {transaction.itemName}
               </p>
               <p className="text-white mb-2">
-                <strong>Closing Price:</strong> ${transaction.closingPrice}
+                <strong>Closing Price:</strong> ₹{transaction.closingPrice}
               </p>
               <p className="text-white mb-2">
                 <strong>Buyer:</strong> {transaction.buyer}
