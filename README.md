@@ -58,7 +58,7 @@ npm install
 npm start
 ```
 
-### Runing the server
+### Running the server
 
 ```bash
 cd SettylAssignment/server
