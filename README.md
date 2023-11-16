@@ -1,6 +1,7 @@
 # Settyl Assignment API
 
 A MERN project built as real-time bidding application. This assignment is a full-stack project.
+For the deployed version of the backend, [https://github.com/mank-423/settylapi]
 
 ## Table of Contents
 
