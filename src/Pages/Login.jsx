@@ -28,6 +28,7 @@ function Login() {
       localStorage.setItem('token', data.user);
       localStorage.setItem('id', userName);
       navigate('/addItem');
+      window.location.reload();
     } else {
       alert("Please check your username and password");
 

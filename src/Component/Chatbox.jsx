@@ -3,7 +3,7 @@ import React from 'react';
 const Chatbox = ({ selectedItem, messages, senderUserId, currentMessage, onMessageChange, onSendMessage, onCloseChatbox }) => {
     return (
         <div className="chatbox p-4 bg-black  rounded shadow-lg m-2">
-            <h2 className="text-lg font-semibold text-white">{selectedItem.name} Chat</h2>
+            <h2 className="text-lg font-semibold text-white~">{selectedItem.name} Chat</h2>
 
             {/* Display chat messages */}
             <div className="messages-container mt-4">

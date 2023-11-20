@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const isLoggedIn = !!localStorage.getItem("token"); // Check if the user is logged in
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("token"));
+  });
 
   const handleLogout = () => {
     // Implement logout logic, clear localStorage, or perform any other necessary actions
     localStorage.removeItem("token");
     localStorage.removeItem("id");
+    // Update login status to trigger a re-render
+    setIsLoggedIn(false);
     // Redirect to the home page or perform other actions
     window.location.href = "/";
   };
