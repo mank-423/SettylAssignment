@@ -27,7 +27,7 @@ function Login() {
       alert("Login Successful");
       localStorage.setItem('token', data.user);
       localStorage.setItem('id', userName);
-      navigate('/addItem');
+      navigate('/');
       window.location.reload();
     } else {
       alert("Please check your username and password");
