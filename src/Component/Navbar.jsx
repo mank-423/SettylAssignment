@@ -9,12 +9,10 @@ const Navbar = () => {
   });
 
   const handleLogout = () => {
-    // Implement logout logic, clear localStorage, or perform any other necessary actions
     localStorage.removeItem("token");
     localStorage.removeItem("id");
-    // Update login status to trigger a re-render
     setIsLoggedIn(false);
-    // Redirect to the home page or perform other actions
+    // Redirect
     window.location.href = "/";
   };
 

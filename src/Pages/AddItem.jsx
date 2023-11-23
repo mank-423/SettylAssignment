@@ -118,7 +118,6 @@ const AddItem = () => {
         // Refresh user items after closing bidding
         fetchUserItems();
       } else {
-        // Handle error
         console.error("Error closing bidding:", response.statusText);
       }
     } catch (error) {
@@ -187,7 +186,7 @@ const AddItem = () => {
               <p className=" mb-2">{item.description}</p>
               <p className=" mb-2">₹{item.price}</p>
 
-              {/* Display bidding details */}
+              {/* Display bidding */}
               <p className="mb-2">
                 <strong>Highest Bid:</strong> ₹{item.highestBidAmount}
               </p>
@@ -198,7 +197,6 @@ const AddItem = () => {
                 <strong>Bidding Status:</strong> {item.biddingStatus}
               </p>
 
-              {/* Add a button to close bidding (if it's open) */}
               {item.biddingStatus === "open" && (
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

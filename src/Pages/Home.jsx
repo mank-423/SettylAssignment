@@ -37,9 +37,7 @@ const Home = () => {
             });
             setBidAmounts(initialBidAmounts);
           } else {
-            // If there is no user, set itemsList and bidAmounts directly
-            setItemsList(data.items || []); // Ensure data.items exists or default to an empty array
-
+            setItemsList(data.items || []); 
             // Initialize bid amounts state
             const initialBidAmounts = {};
             data.items.forEach(item => {
@@ -49,11 +47,9 @@ const Home = () => {
           }
         } else {
           console.error('Error fetching items:', response.statusText);
-          // You might want to set an error state or display a user-friendly error message
         }
       } catch (error) {
         console.error('API call error:', error.message);
-        // You might want to set an error state or display a user-friendly error message
       }
     };
 
@@ -79,7 +75,7 @@ const Home = () => {
   const sendMessage = (itemId) => {
     const currentMessage = currentMessages[itemId];
     if (currentMessage.trim() === '') {
-      return; // Ignore empty messages
+      return;
     }
 
     const newMessage = {
@@ -89,7 +85,7 @@ const Home = () => {
     };
 
     setMessages([...messages, newMessage]);
-    setCurrentMessages((prev) => ({ ...prev, [itemId]: '' })); // Clear currentMessage after sending the message
+    setCurrentMessages((prev) => ({ ...prev, [itemId]: '' }));
   };
 
   const handleBid = async (itemId) => {
@@ -126,11 +122,9 @@ const Home = () => {
 
         alert('Bid placed successfully!');
       } else {
-        // Handle bid placement error
         console.error('Error placing bid:', response.statusText);
       }
     } catch (error) {
-      // Handle other errors
       console.error('API call error:', error.message);
     }
   };

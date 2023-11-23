@@ -29,7 +29,7 @@ connect();
 app.use(cors())
 app.use(express.json())
 
-//Working on validation while registering
+//Work on validation while registering
 app.post('/api/register', async (req, res) => {
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10);
@@ -85,7 +85,7 @@ app.post('/api/items', async (req, res) => {
         const token = req.headers['x-access-token'];
 
         // Verify the token to get the user information
-        const decoded = jwt.verify(token, jwtSecret); // Replace with your actual secret key
+        const decoded = jwt.verify(token, jwtSecret);
 
         const newItem = new item({
             name: req.body.name,
@@ -103,11 +103,11 @@ app.post('/api/items', async (req, res) => {
     }
 });
 
-// Update the route in your backend
 app.get('/api/items/:id', async (req, res) => {
     const userId = req.params.id;
 
     try {
+        // Finding items with the userId which associated
         const items = await item.find({ user: userId });
         res.json({ status: 'ok', items });
     } catch (error) {
@@ -120,24 +120,24 @@ app.put('/api/items/:id/close-bidding', async (req, res) => {
     const itemId = req.params.id;
 
     try {
-        // Find the item with the specified id
+        // Item with the id
         const currentItem = await item.findById(itemId);
 
         if (!currentItem) {
             return res.status(404).json({ status: 'error', error: 'Item not found' });
         }
 
-        // Check if bidding is already closed
+        // Check if bidding closed
         if (currentItem.biddingStatus === 'closed') {
             return res.status(400).json({ status: 'error', error: 'Bidding is already closed for this item' });
         }
 
-        // Update the item with the specified id to set biddingStatus to 'closed'
+        // Update the item 
         const updatedItem = await item.findByIdAndUpdate(itemId, { biddingStatus: 'closed' }, { new: true });
 
         // Create a transaction
         const transaction = new Transaction({
-            username: currentItem.user, // Assuming user is stored as the username in the Item model
+            username: currentItem.user,
             itemName: currentItem.name,
             closingPrice: currentItem.highestBidAmount,
             buyer: currentItem.highestBidder,
@@ -231,7 +231,6 @@ const wsServer = new webSocketServer({
 
 const clients = {};
 
-// This code generates unique userid for every user.
 const getUniqueID = () => {
     const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     return s4() + s4() + '-' + s4();
@@ -242,7 +241,6 @@ wsServer.on('request', function (request) {
     var userID = getUniqueID();
     console.log((new Date()) + ' Received a new connection from origin ' + request.origin + '.');
 
-    // You can rewrite this part of the code to accept only the requests from allowed origin
     const connection = request.accept(null, request.origin);
     clients[userID] = connection;
     console.log('Connected: ' + userID + ' in ' + Object.getOwnPropertyNames(clients));
@@ -251,7 +249,7 @@ wsServer.on('request', function (request) {
         if (message.type === 'utf8') {
             console.log('Received Message: ', message.utf8Data);
 
-            // Broadcasting message to all connected clients excluding the sender
+            // Broadcasting message to all
             Object.keys(clients).forEach(key => {
                 if (key !== userID) {
                     clients[key].sendUTF(message.utf8Data);
